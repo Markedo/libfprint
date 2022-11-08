@@ -7,29 +7,32 @@ Thanks to the amazing work that [nmikhailov](https://github.com/nmikhailov) did 
 
  * It only works if the device has been initialized using [validity-sensors-tools/](https://snapcraft.io/validity-sensors-tools/)
    - Alernatively, but it's less secure, you can use a Windows installation with VirtualBox (sharing USB) guest or with a Windows installation in bare metal
- * This version works only with fprintd2, if you still use fprintd see the [old version](https://github.com/3v1n0/libfprint/tree/vfs0090-libfprint1).
  * Most of the device interaction and crypto code is coming from the prototype, so basically it needs lots of cleanup, but I hope to rebase this on the code from python-validity
  * Here enroll, verification, led and all the operations work
  * It uses libfprint image comparison algorithm, we might move to in-device check later.
 
-You can test it using the [examples](tree/vfs0090/examples) or just using `fprintd-*` tools (GNOME supports it natively from control center).
+You can test it using the [libfprint examples](https://gitlab.freedesktop.org/libfprint/libfprint/-/tree/master/examples) or just using `fprintd-*` tools (GNOME supports it natively from control center).
 
 
 ### Device initialization and pairing
 
-I recommend using the [validity-sensors-tools/](https://snapcraft.io/validity-sensors-tools/), you can install it in any distro as snap, or you can use it manually from sources located in [my python validity fork](https://github.com/3v1n0/python-validity)
+I racommend using the [validity-sensors-tools/](https://snapcraft.io/validity-sensors-tools/), you can install it in any distro as snap, or you can use it manually from sources located in [my python validity fork](https://github.com/3v1n0/python-validity)
 
 ```bash
 sudo snap install validity-sensors-tools
+
 # Give it access to the usb devices
 sudo snap connect validity-sensors-tools:raw-usb
-sudo snap connect validity-sensors-tools:hardware-observe
+
 # Initialize the device
 sudo validity-sensors-tools.initializer
+
 # Test the device
-sudo validity-sensors-tools.led-test
+sudo validity-sensors-tools.led_test
+
 # This is needed and only works in 138a:0097:
 sudo validity-sensors-tools.enroll --finger-id [0-9]
+
 # See other available tools
 validity-sensors-tools --help
 ```
@@ -47,8 +50,6 @@ Unfortunately there's currently no easy way to implement this in this driver wit
 
 If you're using ubuntu just use [this PPA](https://launchpad.net/~3v1n0/+archive/ubuntu/libfprint-vfs0090) to get the libfprint TOD packages with vfs0090 sensor support.
 
-Also, in the ubuntu (and derivates) the code that you will use will be based on the [tod submodule](https://gitlab.freedesktop.org/3v1n0/libfprint-tod-vfs0090).
-
 You can enroll your fingers by using the `fprintd-enroll` utility or from UI using `unity-control-center user-accounts` in unity or `gnome-control-center user-accounts` in GNOME (it's the same as going in System settings -> User accounts pane and enable the fingerprint login).
 
 So, in steps (for ubuntu) it would be:
@@ -56,8 +57,8 @@ So, in steps (for ubuntu) it would be:
 # Initialize the device
 sudo snap install validity-sensors-tools
 sudo snap connect validity-sensors-tools:raw-usb
-sudo snap connect validity-sensors-tools:hardware-observe
 sudo validity-sensors-tools.initializer
+
 # Add the repository and install the tod package (supports both chips)
 sudo add-apt-repository -u ppa:3v1n0/libfprint-vfs0090
 sudo apt install libfprint-2-tod-vfs0090
@@ -65,33 +66,9 @@ sudo apt install libfprint-2-tod-vfs0090
 
 Then go in system settings (account) and enable the fingerprint login
 
-#### Arch linux Installation
+#### Other distros:
 
-Install packages:
- * `fprintd`
- * `libfprint-vfs0090-git` from AUR
-
-#### Fedora (tested on 28)
-- `sudo dnf install -y libusb*-devel libtool nss nss-devel gtk3-devel glib2-devel openssl openssl-devel libXv-devel gcc-c++`
-- `git clone https://github.com/3v1n0/libfprint`
-- `meson libfprint libfprint/_build && sudo ninja -C libfprint/_build install`
-
-#### NixOS
-
-NixOS has the tod module in nixpkgs-unstable (merged June 2021).
-On release 21.05 or newer, and assuming `pkgsUnstable` is an unstable nixpkgs, configure like this:
-
-```
-{
-  services.fprintd.enable = true;
-  services.fprintd.tod.enable = true;
-  services.fprintd.tod.driver = pkgsUnstable.libfprint-2-tod1-vfs0090;
-}
-```
-
-#### Other distros
- - `git clone https://github.com/3v1n0/libfprint`
- - `meson libfprint libfprint/_build && sudo ninja -C libfprint/_build install`
+The TOD module will likely not work in your installation unless you won't install [libfprint-tod](https://gitlab.freedesktop.org/3v1n0/libfprint/tree/tod), so just use my [libfprint-vfs0090 fork](https://github.com/3v1n0/libfprint).
 
 
 #### fprintd enrolling
@@ -99,7 +76,13 @@ On release 21.05 or newer, and assuming `pkgsUnstable` is an unstable nixpkgs, c
 for finger in {left,right}-{thumb,{index,middle,ring,little}-finger}; do fprintd-enroll -f "$finger" "$USER"; done
 ```
 
-#### Help testing (only for `138a:0090`)
+#### Help testing
+
+##### `138a:0097`
+
+I've no hardware using that device, so any help is appreciated.
+
+##### `138a:0090`
 
 It would be nice if you could help in tuning the value of the `bz3_threshold`, as that's the value that defines how different should be the prints, and so it's important for having better security. I've set it to `12` currently, but of course increasing the number of prints we enroll or the image quality that could be increased.
 

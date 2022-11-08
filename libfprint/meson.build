@@ -121,6 +121,8 @@ driver_sources = {
         [ 'drivers/egis0570.c' ],
     'vfs0050' :
         [ 'drivers/vfs0050.c' ],
+    'vfs0090' :
+        [ 'drivers/vfs0090/vfs0090.c', 'drivers/vfs0090/vfs0090.h' ],
     'elan' :
         [ 'drivers/elan.c' ],
     'elanmoc' :
@@ -222,6 +224,8 @@ deps = [
     gobject_dep,
     gusb_dep,
     mathlib_dep,
+    nss_dep,
+    openssl_dep,
 ] + optional_deps
 
 # These are empty and only exist so that the include directories are created

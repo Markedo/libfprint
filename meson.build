@@ -113,6 +113,7 @@ default_drivers = [
     'vfs101',
     'vfs301',
     'vfs0050',
+    'vfs0090',
     'etes603',
     'egis0570',
     'vcom5s',
@@ -156,6 +157,7 @@ driver_helper_mapping = {
     'aes2660' : [ 'aeslib', 'aesx660' ],
     'aes3500' : [ 'aeslib', 'aes3k' ],
     'aes4000' : [ 'aeslib', 'aes3k' ],
+    'vfs0090' : [ 'nss', 'openssl', 'aes3k', 'git' ],
     'uru4000' : [ 'nss' ],
     'elanspi' : [ 'udev' ],
     'virtual_image'          : [ 'virtual' ],
@@ -220,6 +222,29 @@ foreach i : driver_helpers
         endif
 
         optional_deps += nss_dep
+
+    elif i == 'openssl'
+        openssl_dep = dependency('openssl', required: false)
+        if not openssl_dep.found()
+            error('openssl is required for @0@ and possibly others'.format(driver))
+        endif
+
+        optional_deps += openssl_dep
+
+    elif i == 'git'
+        git_dep = dependency('git', required: false)
+        if git.found()
+            message('Updating the vfs0090 submodule')
+            c = run_command(git, ['submodule', 'update', '--init', '--recursive'])
+
+            if c.returncode() != 0
+                error('Impossible to update the vfs0090 submodule')
+            else
+            message('Ensure you updated the vfs0090 submodule!')
+        endif
+
+        optional_deps += git_dep
+
     elif i == 'udev'
         install_udev_rules = true
 
