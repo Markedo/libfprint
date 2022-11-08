@@ -1937,6 +1937,8 @@ handle_db_match_reply (FpiDeviceVfs0090 *vdev, FpiMatchResult result)
         vdev->match_result = FPI_MATCH_SUCCESS;
         break;
       }
+    case FPI_DEVICE_ACTION_NONE:
+      break;
 
     default:
       g_assert_not_reached ();
@@ -2218,6 +2220,8 @@ minutiae_detected (GObject *source_object, GAsyncResult *res, gpointer user_data
         fpi_ssm_jump_to_state (download_ssm, IMAGE_DOWNLOAD_STATE_CHECK_RESULT);
         break;
       }
+    case FPI_DEVICE_ACTION_NONE:
+      break;
 
     default:
       g_assert_not_reached ();
@@ -2363,6 +2367,8 @@ use_database_matching (FpDevice *dev)
 
         return FALSE;
       }
+    case FPI_DEVICE_ACTION_NONE:
+      break;
 
     default:
       return FALSE;
@@ -2503,6 +2509,9 @@ report_retry_error (FpDevice *dev, FpDeviceRetry retry)
 
     case FPI_DEVICE_ACTION_IDENTIFY:
       fpi_device_identify_report (dev, NULL, NULL, error);
+      break;
+    
+    case FPI_DEVICE_ACTION_NONE:
       break;
 
     default:
