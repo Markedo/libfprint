@@ -157,7 +157,7 @@ driver_helper_mapping = {
     'aes2660' : [ 'aeslib', 'aesx660' ],
     'aes3500' : [ 'aeslib', 'aes3k' ],
     'aes4000' : [ 'aeslib', 'aes3k' ],
-    'vfs0090' : [ 'nss', 'openssl', 'aes3k', 'git' ],
+    'vfs0090' : [ 'nss', 'openssl', 'aes3k'],
     'uru4000' : [ 'nss' ],
     'elanspi' : [ 'udev' ],
     'virtual_image'          : [ 'virtual' ],
