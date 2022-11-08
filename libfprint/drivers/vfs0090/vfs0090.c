@@ -2368,7 +2368,7 @@ use_database_matching (FpDevice *dev)
         return FALSE;
       }
     case FPI_DEVICE_ACTION_NONE:
-      break;
+      return FALSE;
 
     default:
       return FALSE;
