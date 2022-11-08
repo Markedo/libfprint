@@ -196,6 +196,22 @@ endif
 udev_rules = get_option('udev_rules')
 install_udev_rules = udev_rules.enabled()
 
+foreach driver: drivers
+    if driver == 'vfs0090'
+        git = find_program('git', required: false)
+        if git.found()
+            message('Updating the vfs0090 submodule')
+            c = run_command(git, ['submodule', 'update', '--init', '--recursive'])
+
+            if c.returncode() != 0
+                error('Impossible to update the vfs0090 submodule')
+            endif
+        else
+            message('Ensure you updated the vfs0090 submodule!')
+        endif
+    endif
+endforeach
+
 optional_deps = []
 
 # Resolve extra dependencies
@@ -222,7 +238,6 @@ foreach i : driver_helpers
         endif
 
         optional_deps += nss_dep
-
     elif i == 'openssl'
         openssl_dep = dependency('openssl', required: false)
         if not openssl_dep.found()
@@ -230,21 +245,6 @@ foreach i : driver_helpers
         endif
 
         optional_deps += openssl_dep
-
-    elif i == 'git'
-        git_dep = dependency('git', required: false)
-        if git.found()
-            message('Updating the vfs0090 submodule')
-            c = run_command(git, ['submodule', 'update', '--init', '--recursive'])
-
-            if c.returncode() != 0
-                error('Impossible to update the vfs0090 submodule')
-            else
-            message('Ensure you updated the vfs0090 submodule!')
-        endif
-
-        optional_deps += git_dep
-
     elif i == 'udev'
         install_udev_rules = true
 
