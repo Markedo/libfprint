@@ -196,22 +196,6 @@ endif
 udev_rules = get_option('udev_rules')
 install_udev_rules = udev_rules.enabled()
 
-foreach driver: drivers
-    if driver == 'vfs0090'
-        git = find_program('git', required: false)
-        if git.found()
-            message('Updating the vfs0090 submodule')
-            c = run_command(git, ['submodule', 'update', '--init', '--recursive'])
-
-            if c.returncode() != 0
-                error('Impossible to update the vfs0090 submodule')
-            endif
-        else
-            message('Ensure you updated the vfs0090 submodule!')
-        endif
-    endif
-endforeach
-
 optional_deps = []
 
 # Resolve extra dependencies

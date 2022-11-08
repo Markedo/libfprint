@@ -156,6 +156,8 @@ helper_sources = {
         [ ],
     'udev' :
         [ ],
+    'openssl' :
+        [ ],
     'virtual' :
         [ 'drivers/virtual-device-listener.c' ],
 }
