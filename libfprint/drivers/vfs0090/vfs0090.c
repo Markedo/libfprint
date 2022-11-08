@@ -1629,7 +1629,7 @@ led_blink_callback_with_ssm (FpiUsbTransfer *transfer, FpDevice *dev,
 
   if (!error)
     {
-      fpi_ssm_next_state_delayed (ssm, 200, NULL);
+      fpi_ssm_next_state_delayed (ssm, 200);
     }
   else
     {
