@@ -1652,7 +1652,7 @@ restart_scan_or_deactivate (FpiDeviceVfs0090 *vdev)
 }
 
 static gboolean
-fp_device_has_feature (FpDevice *dev, FP_DEVICE_FEATURE_CAPTURE)
+vfs_device_supports_capture (FpDevice *dev)
 {
   if (!fp_device_has_feature (dev, FP_DEVICE_FEATURE_CAPTURE))
     return FALSE;
